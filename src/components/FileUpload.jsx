@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FileUp } from "lucide-react";
 
 const FileUpload = ({ setTransactions }) => {
@@ -10,13 +10,12 @@ const FileUpload = ({ setTransactions }) => {
     }
 
     const headerLine = lines[0];
-    const headers = headerLine.split(",").map((h) => h.trim());
-
-    const amountIndex = headers.findIndex((h) => h.includes("Amount"));
-    const categoryIndex = headers.findIndex((h) => h.includes("Transaction Category"));
-    const typeIndex = headers.findIndex((h) => h.includes("Transaction Type"));
-    const dateIndex = headers.findIndex((h) => h.includes("Posting Date") || h.includes("Date"));
-    const descriptionIndex = headers.findIndex((h) => h.includes("Description"));
+    const headers = headerLine.split(",").map((header) => header.trim());
+    const amountIndex = headers.findIndex((header) => header.includes("Amount"));
+    const categoryIndex = headers.findIndex((header) => header.includes("Transaction Category"));
+    const typeIndex = headers.findIndex((header) => header.includes("Transaction Type"));
+    const dateIndex = headers.findIndex((header) => header.includes("Posting Date") || header.includes("Date"));
+    const descriptionIndex = headers.findIndex((header) => header.includes("Description"));
 
     if (amountIndex === -1 || categoryIndex === -1) {
       console.log("amountIndex === -1 || categoryIndex === -1");
