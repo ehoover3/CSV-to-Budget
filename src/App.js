@@ -1,49 +1,21 @@
-import React, { useState } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import React, { useState, useEffect } from "react";
+import { ResponsiveContainer } from "recharts";
 import { formatCurrency } from "./helpers/formatCurrency";
-import { parseCSV } from "./helpers/parseCsv.js";
 import FileUpload from "./components/FileUpload.jsx";
-import CustomTooltip from "./components/CustomTooltip.jsx";
 
 const SpendingTracker = () => {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
-  const [error, setError] = useState("");
-  const [view, setView] = useState("pie");
-
-  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d", "#ffc658", "#8dd1e1", "#a4de6c", "#d0ed57"];
-
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    setError("");
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target.result;
-        parseCSV(text, setTransactions, setCategories, setTotalSpent, setTotalIncome, setError);
-      } catch (err) {
-        setError("Error parsing CSV file. Please check the format.");
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
-  };
 
   return (
     <div className='max-w-6xl mx-auto p-6'>
       <div className='text-center mb-8'>
         <h1 className='text-3xl font-bold mb-4'>Spending Tracker</h1>
-        <div className='flex justify-center mb-6'>
-          <FileUpload handleFileUpload={handleFileUpload} />
-        </div>
+        <FileUpload setTransactions={setTransactions} />
 
-        {error && <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>{error}</div>}
+        {/* setCategories={setCategories} setTotalSpent={setTotalSpent} setTotalIncome={setTotalIncome} */}
 
         {transactions.length > 0 && (
           <div className='mb-6'>
@@ -59,41 +31,19 @@ const SpendingTracker = () => {
             </div>
 
             <div className='bg-white p-6 rounded-lg shadow mb-6'>
-              <div className='flex justify-end mb-4'>
-                <button onClick={() => setView("pie")} className={`px-3 py-1 rounded ${view === "pie" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
-                  Pie
-                </button>
-                <button onClick={() => setView("bar")} className={`ml-2 px-3 py-1 rounded ${view === "bar" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
-                  Bar
-                </button>
-              </div>
-
-              <div className='h-80'>
-                <ResponsiveContainer width='100%' height='100%'>
-                  {view === "pie" ? (
-                    <PieChart>
-                      <Pie data={categories} cx='50%' cy='50%' labelLine={false} outerRadius={100} fill='#8884d8' dataKey='value' label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}>
-                        {categories.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<CustomTooltip />} />
-                    </PieChart>
-                  ) : (
-                    <BarChart data={categories} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray='3 3' />
-                      <XAxis dataKey='name' />
-                      <YAxis />
-                      <Tooltip formatter={(value) => formatCurrency(value)} />
-                      <Bar dataKey='value' fill='#8884d8'>
-                        {categories.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  )}
-                </ResponsiveContainer>
-              </div>
+              <ResponsiveContainer width='100%' height='auto'>
+                <div className='bg-white p-6 rounded-lg shadow'>
+                  <h2 className='text-xl font-semibold mb-4'>Category Summaries</h2>
+                  <div className='space-y-4'>
+                    {categories.map((category, index) => (
+                      <div key={index} className='flex justify-between'>
+                        <span>{category.name}</span>
+                        <span>{formatCurrency(category.value)}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ResponsiveContainer>
             </div>
 
             <div className='bg-white p-6 rounded-lg shadow'>
