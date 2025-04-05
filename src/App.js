@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { FileUp } from "lucide-react";
+import { FileUp, Check, X } from "lucide-react";
 
 const SpendingTracker = () => {
   const [csvData, setCsvData] = useState([]);
   const [categories, setCategories] = useState({});
   const [chartData, setChartData] = useState([]);
+  const [filteredChartData, setFilteredChartData] = useState([]);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [error, setError] = useState("");
   const [view, setView] = useState("pie");
+  const [categoryFilters, setCategoryFilters] = useState({});
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [filteredTotal, setFilteredTotal] = useState(0);
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8", "#82ca9d", "#ffc658", "#8dd1e1", "#a4de6c", "#d0ed57"];
 
@@ -132,11 +136,20 @@ const SpendingTracker = () => {
     // Sort chart data by value descending
     chartDataArray.sort((a, b) => b.value - a.value);
 
+    // Initialize all categories as selected (true)
+    const filters = {};
+    Object.keys(categoryTotals).forEach((category) => {
+      filters[category] = true;
+    });
+
     setCsvData(transactions);
     setCategories(categoryTotals);
     setChartData(chartDataArray);
+    setFilteredChartData(chartDataArray);
     setTotalSpent(spent);
+    setFilteredTotal(spent);
     setTotalIncome(income);
+    setCategoryFilters(filters);
   };
 
   const formatCurrency = (amount) => {
@@ -146,13 +159,43 @@ const SpendingTracker = () => {
     }).format(amount);
   };
 
+  const toggleCategoryFilter = (category) => {
+    const updatedFilters = {
+      ...categoryFilters,
+      [category]: !categoryFilters[category],
+    };
+
+    setCategoryFilters(updatedFilters);
+    applyFilters(updatedFilters);
+  };
+
+  const toggleAllCategories = (selectAll) => {
+    const updatedFilters = {};
+    Object.keys(categoryFilters).forEach((category) => {
+      updatedFilters[category] = selectAll;
+    });
+
+    setCategoryFilters(updatedFilters);
+    applyFilters(updatedFilters);
+  };
+
+  const applyFilters = (filters) => {
+    // Filter chart data based on selected categories
+    const filtered = chartData.filter((item) => filters[item.name]);
+    setFilteredChartData(filtered);
+
+    // Calculate total of filtered categories
+    const filteredSum = filtered.reduce((sum, item) => sum + item.value, 0);
+    setFilteredTotal(filteredSum);
+  };
+
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       return (
         <div className='bg-white p-4 rounded shadow border'>
           <p className='font-semibold'>{`${payload[0].name}`}</p>
           <p className='text-lg'>{formatCurrency(payload[0].value)}</p>
-          <p>{`${((payload[0].value / totalSpent) * 100).toFixed(1)}% of total`}</p>
+          <p>{`${((payload[0].value / filteredTotal) * 100).toFixed(1)}% of filtered total`}</p>
         </div>
       );
     }
@@ -179,6 +222,7 @@ const SpendingTracker = () => {
               <div className='bg-white p-6 rounded-lg shadow'>
                 <h2 className='text-xl font-semibold mb-2'>Total Spending</h2>
                 <p className='text-3xl text-red-600'>{formatCurrency(totalSpent)}</p>
+                {filteredTotal !== totalSpent && <p className='text-lg text-gray-600 mt-2'>Filtered: {formatCurrency(filteredTotal)}</p>}
               </div>
               <div className='bg-white p-6 rounded-lg shadow'>
                 <h2 className='text-xl font-semibold mb-2'>Total Income</h2>
@@ -190,6 +234,9 @@ const SpendingTracker = () => {
               <div className='flex justify-between items-center mb-4'>
                 <h2 className='text-xl font-semibold'>Spending by Category</h2>
                 <div className='flex gap-2'>
+                  <button onClick={() => setShowFilterPanel(!showFilterPanel)} className={`px-3 py-1 rounded ${showFilterPanel ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
+                    Filters
+                  </button>
                   <button onClick={() => setView("pie")} className={`px-3 py-1 rounded ${view === "pie" ? "bg-blue-600 text-white" : "bg-gray-200"}`}>
                     Pie
                   </button>
@@ -199,32 +246,62 @@ const SpendingTracker = () => {
                 </div>
               </div>
 
-              {chartData.length > 0 && (
+              {showFilterPanel && (
+                <div className='bg-gray-50 p-4 rounded-lg mb-4 text-left'>
+                  <div className='flex justify-between items-center mb-2'>
+                    <h3 className='font-medium'>Filter Categories</h3>
+                    <div className='flex gap-2'>
+                      <button onClick={() => toggleAllCategories(true)} className='flex items-center gap-1 px-2 py-1 text-sm bg-green-100 text-green-800 rounded hover:bg-green-200'>
+                        <Check size={16} /> Select All
+                      </button>
+                      <button onClick={() => toggleAllCategories(false)} className='flex items-center gap-1 px-2 py-1 text-sm bg-red-100 text-red-800 rounded hover:bg-red-200'>
+                        <X size={16} /> Clear All
+                      </button>
+                    </div>
+                  </div>
+                  <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 mt-2'>
+                    {Object.keys(categoryFilters).map((category) => (
+                      <div key={category} className='flex items-center'>
+                        <input type='checkbox' id={`filter-${category}`} checked={categoryFilters[category]} onChange={() => toggleCategoryFilter(category)} className='mr-2' />
+                        <label htmlFor={`filter-${category}`} className='text-sm truncate'>
+                          {category}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filteredChartData.length > 0 ? (
                 <div className='h-80'>
                   <ResponsiveContainer width='100%' height='100%'>
                     {view === "pie" ? (
                       <PieChart>
-                        <Pie data={chartData} cx='50%' cy='50%' labelLine={false} outerRadius={100} fill='#8884d8' dataKey='value' label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}>
-                          {chartData.map((entry, index) => (
+                        <Pie data={filteredChartData} cx='50%' cy='50%' labelLine={false} outerRadius={100} fill='#8884d8' dataKey='value' label={({ name, percent }) => `${name} (${(percent * 100).toFixed(0)}%)`}>
+                          {filteredChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Pie>
                         <Tooltip content={<CustomTooltip />} />
                       </PieChart>
                     ) : (
-                      <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <BarChart data={filteredChartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         <CartesianGrid strokeDasharray='3 3' />
                         <XAxis dataKey='name' />
                         <YAxis />
                         <Tooltip formatter={(value) => formatCurrency(value)} />
                         <Bar dataKey='value' fill='#8884d8'>
-                          {chartData.map((entry, index) => (
+                          {filteredChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                           ))}
                         </Bar>
                       </BarChart>
                     )}
                   </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className='h-80 flex items-center justify-center bg-gray-50 rounded'>
+                  <p className='text-gray-500'>No categories selected to display</p>
                 </div>
               )}
             </div>
