@@ -253,7 +253,7 @@ const FileUpload = ({ setTransactions }) => {
       if (transaction.date === "3/9/2025" && transaction.description == "United Airlines") {
         transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
         transaction.category = "Home";
-        transaction.category = "Home Improvement";
+        transaction.subcategory = "Home Improvement";
       }
       if (transaction.description === "Amazon") {
         transaction.category = "Home";
