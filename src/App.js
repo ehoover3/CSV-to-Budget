@@ -3,7 +3,6 @@ import FileUpload from "./components/FileUpload.jsx";
 import Totals from "./components/Totals.jsx";
 import CategoryTotals from "./components/CategoryTotals.jsx";
 import VendorTotals from "./components/VendorTotals.jsx";
-import TransactionsTable from "./components/Transactions.jsx";
 
 const SpendingTracker = () => {
   const [transactions, setTransactions] = useState([]);
@@ -12,27 +11,21 @@ const SpendingTracker = () => {
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
 
-  useEffect(() => {
-    // Initialize variables for total spent and total income
-    let totalSpentAmount = 0;
-    let totalIncomeAmount = 0;
-    let categoriesMap = {};
+  function getTotalIncomeAmount(transactions) {
+    return transactions.filter((transaction) => transaction.isIncluded && transaction.type === "Income").reduce((sum, transaction) => sum + transaction.amount, 0);
+  }
 
-    // Loop through transactions to calculate totals and categorize them
+  function getTotalSpentAmount(transactions) {
+    return transactions.filter((transaction) => transaction.isIncluded && transaction.type === "Expense").reduce((sum, transaction) => sum + transaction.amount, 0);
+  }
+
+  function getCategories(transactions) {
+    const categoriesMap = {};
     transactions
       .filter((transaction) => transaction.isIncluded)
       .forEach((transaction) => {
-        if (transaction.type === "Expense") {
-          totalSpentAmount += transaction.amount;
-        } else if (transaction.type === "Income") {
-          totalIncomeAmount += transaction.amount;
-        }
-
-        // Get category and subcategory
         const category = transaction.category;
         const subcategory = transaction.subcategory || "General";
-
-        // Initialize category in the map if it doesn't exist
         if (!categoriesMap[category]) {
           categoriesMap[category] = {
             name: category,
@@ -40,47 +33,34 @@ const SpendingTracker = () => {
             subcategories: {},
           };
         }
-
-        // Add to category total
         categoriesMap[category].value += transaction.amount;
-
-        // Initialize subcategory if it doesn't exist
         if (!categoriesMap[category].subcategories[subcategory]) {
           categoriesMap[category].subcategories[subcategory] = {
             name: subcategory,
             value: 0,
           };
         }
-
-        // Add to subcategory total
         categoriesMap[category].subcategories[subcategory].value += transaction.amount;
       });
-
-    // Convert categoriesMap to array and sort
     const categoriesData = Object.values(categoriesMap);
-
-    // Convert subcategories from objects to arrays and sort them
     categoriesData.forEach((category) => {
-      category.subcategoriesArray = Object.values(category.subcategories);
-      category.subcategoriesArray.sort((a, b) => a.value - b.value); // Sort by value in descending order
+      category.subcategoriesArray = Object.values(category.subcategories).sort((a, b) => a.value - b.value);
     });
-
-    categoriesData.sort((a, b) => a.value - b.value); // Sort categories by value
-    // Find and move "Income" category to index 0
+    categoriesData.sort((a, b) => a.value - b.value);
     const incomeIndex = categoriesData.findIndex((item) => item.name === "Income");
     if (incomeIndex > 0) {
       const [incomeItem] = categoriesData.splice(incomeIndex, 1);
       categoriesData.unshift(incomeItem);
     }
+    return categoriesData;
+  }
 
-    // Update vendors data
-    let vendorsData = [];
+  function getVendors(transactions) {
+    const vendorsData = [];
     transactions
       .filter((transaction) => transaction.isIncluded)
       .forEach((transaction) => {
-        // Check if the vendor (description) already exists in vendorsData
         const existingVendor = vendorsData.find((vendor) => vendor.description === transaction.description);
-
         if (existingVendor) {
           existingVendor.total += transaction.amount;
         } else {
@@ -92,13 +72,14 @@ const SpendingTracker = () => {
           });
         }
       });
-    vendorsData.sort((a, b) => a.total - b.total);
+    return vendorsData.sort((a, b) => a.total - b.total);
+  }
 
-    // Update the state with the calculated values
-    setTotalIncome(totalIncomeAmount);
-    setTotalSpent(totalSpentAmount);
-    setCategoryData(categoriesData);
-    setVendors(vendorsData);
+  useEffect(() => {
+    setTotalIncome(getTotalIncomeAmount(transactions));
+    setTotalSpent(getTotalSpentAmount(transactions));
+    setCategoryData(getCategories(transactions));
+    setVendors(getVendors(transactions));
   }, [transactions]);
 
   return (
