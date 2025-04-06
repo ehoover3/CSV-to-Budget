@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { formatCurrency } from "./helpers/formatCurrency";
 import FileUpload from "./components/FileUpload.jsx";
+import Totals from "./components/Totals.jsx";
+import CategoryTotals from "./components/CategoryTotals.jsx";
+import VendorTotals from "./components/VendorTotals.jsx";
+import TransactionsTable from "./components/Transactions.jsx";
 
 const SpendingTracker = () => {
   const [transactions, setTransactions] = useState([]);
@@ -105,105 +108,10 @@ const SpendingTracker = () => {
         <FileUpload setTransactions={setTransactions} />
         {transactions.length > 0 && (
           <div className='mb-6'>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
-              <div className='bg-white p-6 rounded-lg shadow'>
-                <h2 className='text-xl font-semibold mb-2'>Total Income</h2>
-                <p className='text-3xl text-green-600'>{formatCurrency(totalIncome)}</p>
-              </div>
-              <div className='bg-white p-6 rounded-lg shadow'>
-                <h2 className='text-xl font-semibold mb-2'>Total Spending</h2>
-                <p className='text-3xl text-red-600'>{formatCurrency(totalSpent)}</p>
-              </div>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow mb-6'>
-              <h2 className='text-xl font-semibold mb-4'>Category Totals</h2>
-              <div className='space-y-4'>
-                {categoryData.map((category, index) => (
-                  <div key={index} className='border-b pb-2 last:border-b-0'>
-                    <div className='flex justify-between font-semibold'>
-                      <span>{category.name}</span>
-                      <span className={category.value >= 0 ? "text-green-600" : "text-red-600"}>{formatCurrency(category.value)}</span>
-                    </div>
-                    <div className='pl-4 space-y-1 mt-1'>
-                      {category.subcategoriesArray.map((subcategory, subIndex) => (
-                        <div key={`${index}-${subIndex}`} className='flex justify-between text-sm text-gray-600'>
-                          <span>- {subcategory.name}</span>
-                          <span>{formatCurrency(subcategory.value)}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Vendor Summaries */}
-            <div className='bg-white p-6 rounded-lg shadow mb-6'>
-              <h2 className='text-xl font-semibold mb-4'>Vendor Totals</h2>
-              <div className='overflow-x-auto'>
-                <table className='min-w-full bg-white'>
-                  <thead>
-                    <tr>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Description</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Category</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Subcategory</th>
-                      <th className='py-2 px-4 bg-gray-100 text-right'>Total Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {vendors.map((vendor, index) => (
-                      <tr key={index} className='border-b hover:bg-gray-50'>
-                        <td className='py-2 px-4 text-left'>{vendor.description}</td>
-                        <td className='py-2 px-4 text-left'>{vendor.category}</td>
-                        <td className='py-2 px-4 text-left'>{vendor.subcategory}</td>
-                        <td className={`py-2 px-4 text-right ${vendor.total >= 0 ? "text-green-600" : "text-red-600"}`}>{formatCurrency(vendor.total)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className='bg-white p-6 rounded-lg shadow'>
-              <h2 className='text-xl font-semibold mb-4'>Transactions</h2>
-              <div className='overflow-x-auto'>
-                <table className='min-w-full bg-white'>
-                  <thead>
-                    <tr>
-                      <th className='py-2 px-4 bg-gray-100 text-center'>isIncluded</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Date</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Description</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Category</th>
-                      <th className='py-2 px-4 bg-gray-100 text-left'>Subcategory</th>
-                      <th className='py-2 px-4 bg-gray-100 text-right'>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {transactions.map((transaction, index) => (
-                      <tr key={index} className='border-b hover:bg-gray-50'>
-                        <td className='py-2 px-4 text-center'>
-                          <input
-                            type='checkbox'
-                            checked={transaction.isIncluded}
-                            onChange={() => {
-                              const updatedTransactions = [...transactions];
-                              updatedTransactions[index].isIncluded = !updatedTransactions[index].isIncluded;
-                              setTransactions(updatedTransactions);
-                            }}
-                          />
-                        </td>
-                        <td className='py-2 px-4 text-left'>{transaction.date}</td>
-                        <td className='py-2 px-4 text-left'>{transaction.description}</td>
-                        <td className='py-2 px-4 text-left'>{transaction.category}</td>
-                        <td className='py-2 px-4 text-left'>{transaction.subcategory || "General"}</td>
-                        <td className={`py-2 px-4 text-right ${transaction.type === "Expense" ? "text-red-600" : "text-green-600"}`}>{formatCurrency(transaction.amount)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+            <Totals totalIncome={totalIncome} totalSpent={totalSpent} />
+            <CategoryTotals categoryData={categoryData} />
+            <VendorTotals vendors={vendors} />
+            <TransactionsTable transactions={transactions} setTransactions={setTransactions} />
           </div>
         )}
       </div>
