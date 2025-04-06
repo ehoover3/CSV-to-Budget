@@ -36,8 +36,8 @@ const SpendingTracker = () => {
     });
 
     // Update the state with the calculated values
-    setTotalSpent(totalSpentAmount);
     setTotalIncome(totalIncomeAmount);
+    setTotalSpent(totalSpentAmount);
     setCategories(categoriesData);
   }, [transactions]);
 
@@ -81,6 +81,7 @@ const SpendingTracker = () => {
                 <table className='min-w-full bg-white'>
                   <thead>
                     <tr>
+                      <th className='py-2 px-4 bg-gray-100 text-center'>isIncluded</th> {/* New column for the checkbox */}
                       <th className='py-2 px-4 bg-gray-100 text-left'>Date</th>
                       <th className='py-2 px-4 bg-gray-100 text-left'>Description</th>
                       <th className='py-2 px-4 bg-gray-100 text-left'>Category</th>
@@ -90,9 +91,20 @@ const SpendingTracker = () => {
                   <tbody>
                     {transactions.map((transaction, index) => (
                       <tr key={index} className='border-b hover:bg-gray-50'>
-                        <td className='py-2 px-4'>{transaction.date}</td>
-                        <td className='py-2 px-4'>{transaction.description}</td>
-                        <td className='py-2 px-4'>{transaction.category}</td>
+                        <td className='py-2 px-4 text-center'>
+                          <input
+                            type='checkbox'
+                            checked={transaction.isIncluded}
+                            onChange={() => {
+                              const updatedTransactions = [...transactions];
+                              updatedTransactions[index].isIncluded = !updatedTransactions[index].isIncluded;
+                              setTransactions(updatedTransactions);
+                            }}
+                          />
+                        </td>
+                        <td className='py-2 px-4 text-left'>{transaction.date}</td>
+                        <td className='py-2 px-4 text-left'>{transaction.description}</td>
+                        <td className='py-2 px-4 text-left'>{transaction.category}</td>
                         <td className={`py-2 px-4 text-right ${transaction.type === "Expense" ? "text-red-600" : "text-green-600"}`}>{formatCurrency(transaction.amount)}</td>
                       </tr>
                     ))}

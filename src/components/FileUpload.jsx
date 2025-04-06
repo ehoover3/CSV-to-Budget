@@ -60,6 +60,7 @@ const FileUpload = ({ setTransactions }) => {
             amount,
             category,
             type: isDebit ? "Expense" : "Income",
+            isIncluded: true, // Add isIncluded property
           });
         }
       }
