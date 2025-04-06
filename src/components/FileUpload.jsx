@@ -65,6 +65,9 @@ const FileUpload = ({ setTransactions }) => {
       }
     }
 
+    console.log("TRANSACTIONS - START");
+    console.log(transactions);
+    console.log("TRANSACTIONS - END");
     setTransactions(transactions);
   };
 

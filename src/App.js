@@ -9,24 +9,53 @@ const SpendingTracker = () => {
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
 
+  useEffect(() => {
+    // Initialize variables for total spent and total income
+    let totalSpentAmount = 0;
+    let totalIncomeAmount = 0;
+    let categoriesData = [];
+
+    // Loop through transactions to calculate totals and categorize them
+    transactions.forEach((transaction) => {
+      if (transaction.type === "Expense") {
+        totalSpentAmount += transaction.amount;
+      } else if (transaction.type === "Income") {
+        totalIncomeAmount += transaction.amount;
+      }
+
+      // Update categories data
+      const existingCategory = categoriesData.find((category) => category.name === transaction.category);
+      if (existingCategory) {
+        existingCategory.value += transaction.amount;
+      } else {
+        categoriesData.push({
+          name: transaction.category,
+          value: transaction.amount,
+        });
+      }
+    });
+
+    // Update the state with the calculated values
+    setTotalSpent(totalSpentAmount);
+    setTotalIncome(totalIncomeAmount);
+    setCategories(categoriesData);
+  }, [transactions]);
+
   return (
     <div className='max-w-6xl mx-auto p-6'>
       <div className='text-center mb-8'>
         <h1 className='text-3xl font-bold mb-4'>Spending Tracker</h1>
         <FileUpload setTransactions={setTransactions} />
-
-        {/* setCategories={setCategories} setTotalSpent={setTotalSpent} setTotalIncome={setTotalIncome} */}
-
         {transactions.length > 0 && (
           <div className='mb-6'>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
               <div className='bg-white p-6 rounded-lg shadow'>
-                <h2 className='text-xl font-semibold mb-2'>Total Spending</h2>
-                <p className='text-3xl text-red-600'>{formatCurrency(totalSpent)}</p>
-              </div>
-              <div className='bg-white p-6 rounded-lg shadow'>
                 <h2 className='text-xl font-semibold mb-2'>Total Income</h2>
                 <p className='text-3xl text-green-600'>{formatCurrency(totalIncome)}</p>
+              </div>
+              <div className='bg-white p-6 rounded-lg shadow'>
+                <h2 className='text-xl font-semibold mb-2'>Total Spending</h2>
+                <p className='text-3xl text-red-600'>{formatCurrency(totalSpent)}</p>
               </div>
             </div>
 
