@@ -111,7 +111,7 @@ const SpendingTracker = () => {
             <Totals totalIncome={totalIncome} totalSpent={totalSpent} />
             <CategoryTotals categoryData={categoryData} />
             <VendorTotals vendors={vendors} />
-            <TransactionsTable transactions={transactions} setTransactions={setTransactions} />
+            {/* <TransactionsTable transactions={transactions} setTransactions={setTransactions} /> */}
           </div>
         )}
       </div>

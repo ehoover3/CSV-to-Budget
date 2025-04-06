@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { FileUp } from "lucide-react";
 
 const FileUpload = ({ setTransactions }) => {
@@ -66,15 +66,7 @@ const FileUpload = ({ setTransactions }) => {
       }
     }
 
-    const categoryList = [
-      {
-        category: "Financial Services",
-        subcategories: [
-          { subcategory: "ATM/Cash Withdrawals", vendors: ["PAI ISO 1265 N STATE ROAD 5 SHIPSHEWANA INUS", "Withdrawal"] },
-          { subcategory: "Checks", vendors: ["Check # 1086: Completed", "Check # 1090: Completed"] },
-          { subcategory: "Fees", vendors: ["3rivers Federal Credit Union Service Charges/Fees"] },
-        ],
-      },
+    const transactionMapping = [
       {
         category: "Career Expenses",
         subcategories: [
@@ -89,6 +81,15 @@ const FileUpload = ({ setTransactions }) => {
       {
         category: "Daycare",
         subcategories: [{ subcategory: "Kiddie Academy", vendors: ["Kiddie Academy"] }],
+      },
+      {
+        category: "Financial Services",
+        subcategories: [
+          { subcategory: "ATM/Cash Withdrawals", vendors: ["PAI ISO 1265 N STATE ROAD 5 SHIPSHEWANA INUS", "Withdrawal"] },
+          { subcategory: "Checks", vendors: ["Check # 1086: Completed", "Check # 1090: Completed"] },
+          { subcategory: "Credit Card Payments", vendors: ["Payment to Capital One"] },
+          { subcategory: "Fees", vendors: ["3rivers Federal Credit Union Service Charges/Fees"] },
+        ],
       },
       {
         category: "Food",
@@ -167,8 +168,9 @@ const FileUpload = ({ setTransactions }) => {
         subcategories: [
           { subcategory: "Running Events", vendors: ["SignUp *PathfinderTurk 300 Mill Street, Suite XX1360 N", "SignUp *FROZENTRAILFES 300 Mill Street, Suite XX1360 N"] },
           { subcategory: "Streaming Service", vendors: ["Payment to Amazon Prime", "Peacock"] },
+          { subcategory: "Theater / Tradeshows", vendors: ["Box office", "COLISEUM TKTS 4000 Parnell Ave FORT WAYNE INUS"] },
           { subcategory: "Video Games", vendors: ["Steam", "WL *STEAM PURCH x0400 NE 4th Ste StSEATTLE WAUS"] },
-          { subcategory: "Zoos", vendors: ["COLUMBUS ZOO GU 9990 RIVERSIDE DRIVPOWELL OHUS", "Potter Park Zoo"] },
+          { subcategory: "Zoos", vendors: ["COLUMBUS ZOO GU 9990 RIVERSIDE DRIVPOWELL OHUS", "FORT WAYNE ZOOL 3411 Sherman Blvd FORT WAYNE INUS", "Potter Park Zoo"] },
         ],
       },
       {
@@ -255,18 +257,17 @@ const FileUpload = ({ setTransactions }) => {
       },
     ];
     console.log(transactions);
-    // transactions.forEach((transaction) => transaction.description.trim());
+
     transactions.forEach((transaction) => {
-      // Set Transfers isIncluded to false
       if (transaction.description.includes("# Xfer From")) transaction.isIncluded = false;
       if (transaction.description.includes("# Xfer To")) transaction.isIncluded = false;
-      if (transaction.date === "3/9/2025" && transaction.description == "United Airlines") transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
+      if (transaction.date === "3/9/2025" && transaction.description === "United Airlines") transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
 
-      for (const categoryGroup of categoryList) {
-        for (const subcat of categoryGroup.subcategories) {
-          if (subcat.vendors.includes(transaction.description)) {
-            transaction.category = categoryGroup.category;
-            transaction.subcategory = subcat.subcategory;
+      for (const category of transactionMapping) {
+        for (const subcategory of category.subcategories) {
+          if (subcategory.vendors.includes(transaction.description)) {
+            transaction.category = category.category;
+            transaction.subcategory = subcategory.subcategory;
             return; // Stop once we find the first match
           }
         }
