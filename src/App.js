@@ -297,13 +297,13 @@ const SpendingTracker = () => {
             </div>
 
             <div className='bg-white p-6 rounded-lg shadow mb-6'>
-              <h2 className='text-xl font-semibold mb-4'>Category Summaries</h2>
+              <h2 className='text-xl font-semibold mb-4'>Category Totals</h2>
               <div className='space-y-4'>
                 {categoryData.map((category, index) => (
                   <div key={index} className='border-b pb-2 last:border-b-0'>
                     <div className='flex justify-between font-semibold'>
                       <span>{category.name}</span>
-                      <span>{formatCurrency(category.value)}</span>
+                      <span className={category.value >= 0 ? "text-green-600" : "text-red-600"}>{formatCurrency(category.value)}</span>
                     </div>
                     <div className='pl-4 space-y-1 mt-1'>
                       {category.subcategoriesArray.map((subcategory, subIndex) => (
@@ -320,7 +320,7 @@ const SpendingTracker = () => {
 
             {/* Vendor Summaries */}
             <div className='bg-white p-6 rounded-lg shadow mb-6'>
-              <h2 className='text-xl font-semibold mb-4'>Description Totals</h2>
+              <h2 className='text-xl font-semibold mb-4'>Vendor Totals</h2>
               <div className='overflow-x-auto'>
                 <table className='min-w-full bg-white'>
                   <thead>
@@ -337,7 +337,7 @@ const SpendingTracker = () => {
                         <td className='py-2 px-4 text-left'>{vendor.description}</td>
                         <td className='py-2 px-4 text-left'>{vendor.category}</td>
                         <td className='py-2 px-4 text-left'>{vendor.subcategory}</td>
-                        <td className='py-2 px-4 text-right'>{formatCurrency(vendor.total)}</td>
+                        <td className={`py-2 px-4 text-right ${vendor.total >= 0 ? "text-green-600" : "text-red-600"}`}>{formatCurrency(vendor.total)}</td>
                       </tr>
                     ))}
                   </tbody>
