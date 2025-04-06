@@ -6,6 +6,7 @@ import FileUpload from "./components/FileUpload.jsx";
 const SpendingTracker = () => {
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [vendors, setVendors] = useState([]);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
 
@@ -16,29 +17,57 @@ const SpendingTracker = () => {
     let categoriesData = [];
 
     // Loop through transactions to calculate totals and categorize them
-    transactions.forEach((transaction) => {
-      if (transaction.type === "Expense") {
-        totalSpentAmount += transaction.amount;
-      } else if (transaction.type === "Income") {
-        totalIncomeAmount += transaction.amount;
-      }
+    transactions
+      .filter((transaction) => transaction.isIncluded)
+      .forEach((transaction) => {
+        if (transaction.type === "Expense") {
+          totalSpentAmount += transaction.amount;
+        } else if (transaction.type === "Income") {
+          totalIncomeAmount += transaction.amount;
+        }
 
-      // Update categories data
-      const existingCategory = categoriesData.find((category) => category.name === transaction.category);
-      if (existingCategory) {
-        existingCategory.value += transaction.amount;
-      } else {
-        categoriesData.push({
-          name: transaction.category,
-          value: transaction.amount,
-        });
-      }
-    });
+        // Update categories data
+        const existingCategory = categoriesData.find((category) => category.name === transaction.category);
+        if (existingCategory) {
+          existingCategory.value += transaction.amount;
+        } else {
+          categoriesData.push({
+            name: transaction.category,
+            value: transaction.amount,
+          });
+        }
+      });
+    categoriesData.sort((a, b) => a.value - b.value);
+
+    // Update vendors data
+    let vendorsData = [];
+    transactions
+      .filter((transaction) => transaction.isIncluded)
+      .forEach((transaction) => {
+        // Check if the vendor (description) already exists in vendorsData
+        const existingVendor = vendorsData.find((vendor) => vendor.description === transaction.description);
+
+        if (existingVendor) {
+          existingVendor.total += transaction.amount;
+        } else {
+          vendorsData.push({
+            description: transaction.description,
+            category: transaction.category,
+            total: transaction.amount,
+          });
+        }
+      });
+    vendorsData.sort((a, b) => a.description.localeCompare(b.description));
+
+    console.log("vendorsData START");
+    console.log(vendorsData);
+    console.log("vendorData end");
 
     // Update the state with the calculated values
     setTotalIncome(totalIncomeAmount);
     setTotalSpent(totalSpentAmount);
     setCategories(categoriesData);
+    setVendors(vendorsData);
   }, [transactions]);
 
   return (
@@ -73,6 +102,31 @@ const SpendingTracker = () => {
                   </div>
                 </div>
               </ResponsiveContainer>
+            </div>
+
+            {/* Vendor Summaries */}
+            <div className='bg-white p-6 rounded-lg shadow mb-6'>
+              <h2 className='text-xl font-semibold mb-4'>Description Totals</h2>
+              <div className='overflow-x-auto'>
+                <table className='min-w-full bg-white'>
+                  <thead>
+                    <tr>
+                      <th className='py-2 px-4 bg-gray-100 text-left'>Description</th>
+                      <th className='py-2 px-4 bg-gray-100 text-left'>Category</th>
+                      <th className='py-2 px-4 bg-gray-100 text-right'>Total Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {vendors.map((vendor, index) => (
+                      <tr key={index} className='border-b hover:bg-gray-50'>
+                        <td className='py-2 px-4 text-left'>{vendor.description}</td>
+                        <td className='py-2 px-4 text-left'>{vendor.category}</td>
+                        <td className='py-2 px-4 text-right'>{formatCurrency(vendor.total)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className='bg-white p-6 rounded-lg shadow'>
