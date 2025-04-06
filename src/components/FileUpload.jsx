@@ -66,7 +66,6 @@ const FileUpload = ({ setTransactions }) => {
       }
     }
 
-    // Clean Up the Transactions Data
     transactions.forEach((transaction) => {
       // Set Transfers isIncluded to false
       if (transaction.description.includes("# Xfer From")) transaction.isIncluded = false;
@@ -78,14 +77,15 @@ const FileUpload = ({ setTransactions }) => {
         transaction.category = "Shopping";
       }
 
-      if (transaction.description === "Payment to Amazon Prime")
-        // Amazon Prime
-        transaction.category = "Amazon Prime";
-
       // Car
       if (transaction.description === "A1 Automotive") transaction.category = "Car";
       if (transaction.description === "E-ZPass") transaction.category = "Car";
       if (transaction.description === "The Tube Car Wash") transaction.category = "Car";
+      if (transaction.description === "Lassus") transaction.category = "Car";
+      if (transaction.description === "Murphy USA") transaction.category = "Car";
+      if (transaction.description === "Payment to Erie Insurance Group") transaction.category = "Car";
+      if (transaction.description === "Shell") transaction.category = "Car";
+      if (transaction.description === "Sunoco") transaction.category = "Car";
 
       // Career Expenses
       if (transaction.description === "Amazon Web Services") transaction.category = "Career Expenses";
@@ -96,68 +96,192 @@ const FileUpload = ({ setTransactions }) => {
       // Daycare
       if (transaction.description === "Kiddie Academy") transaction.category = "Daycare";
 
-      // Entertainment
-      if (transaction.description === "Steam") transaction.category = "Entertainment";
-      if (transaction.description === "MEMORIAL COLISEUM PARK 4000 PARNELL AVENUE FORT WAYNE I") transaction.category = "Entertainment";
-
-      // Gas
-      if (transaction.description === "Lassus") transaction.category = "Gas";
-      if (transaction.description === "Murphy USA") transaction.category = "Gas";
-      if (transaction.description === "Shell") transaction.category = "Gas";
-      if (transaction.description === "Sunoco") transaction.category = "Gas";
+      // Food - Grocery / Restaurant
+      if (transaction.description === "ALDI") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
+      if (transaction.description === "Kroger") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
+      if (transaction.description === "Meijer") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
+      if (transaction.description === "Trader Joe's") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
+      if (transaction.description === "Chipotle Mexican Grill") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "THE FAIRFIELD 1510 FAIRFIELD AVE FORT WAYNE INUS") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "Portillo's") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "Smoothie King") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "SWEETWATER DOWNBEAT DI 5501 US Hwy 30 W FORT WAYNE I") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "The Lucky Moose") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "The Famous Taco") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
+      if (transaction.description === "TST*TEQUILA MEXICAN RE 6328 W Jefferson Blvd Fort Wayne I") {
+        transaction.category = "Food";
+        transaction.subcategory = "Restaurant";
+      }
 
       // Health
-      if (transaction.description === "ROOTED IN HEALING 6131 STONEY CREEK DRIVEFORT WAYNE INUS") transaction.category = "Healthcare";
-      if (transaction.description === "Walgreens") transaction.category = "Healthcare";
-      if (transaction.description === "YMCA") transaction.category = "Healthcare";
-
-      // Home Improvement
-      if (transaction.description === "Lowe's") transaction.category = "Home Improvement";
-      if (transaction.description === "Harbor Freight Tools") transaction.category = "Home Improvement";
+      if (transaction.description === "ROOTED IN HEALING 6131 STONEY CREEK DRIVEFORT WAYNE INUS") transaction.category = "Health";
+      if (transaction.description === "Walgreens") transaction.category = "Health";
+      if (transaction.description === "YMCA") transaction.category = "Health";
 
       // Income
       if (transaction.description === "Mobile Deposit") transaction.category = "Income";
       if (transaction.description === "DIGITAL MOBILE I - PAYROLL") transaction.category = "Income";
 
-      // Rent / Utilities / Phone
-      if (transaction.description === "BILT bx2919bXX00 - BILTRENT") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "RPS*Reserve at Daws CD 8902 N Meridian St #XX0154 I") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "Payment to Nipsco") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "Payment to Nipsco	Utilities") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "Payment to Remc") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "Payment to T-Mobile") transaction.category = "Rent / Utilities / Phone";
-      if (transaction.description === "Payment to Verizon Wireless") transaction.category = "Rent / Utilities / Phone";
+      // Home - Rent / Utilities / Phone / Taxes / Home Improvement
+      if (transaction.description === "BILT bx2919bXX00 - BILTRENT") {
+        transaction.category = "Home";
+        transaction.subcategory = "Rent";
+      }
+      if (transaction.description === "RPS*Reserve at Daws CD 8902 N Meridian St #XX0154 I") {
+        transaction.category = "Home";
+        transaction.subcategory = "Rent";
+      }
+      if (transaction.description === "Payment to Nipsco") {
+        transaction.category = "Home";
+        transaction.subcategory = "Utilities";
+      }
+      if (transaction.description === "Payment to Nipsco	Utilities") {
+        transaction.category = "Home";
+        transaction.subcategory = "Utilities";
+      }
+      if (transaction.description === "Payment to Remc") {
+        transaction.category = "Home";
+        transaction.subcategory = "Utilities";
+      }
+      if (transaction.description === "Payment to T-Mobile") {
+        transaction.category = "Home";
+        transaction.subcategory = "Phone";
+      }
+      if (transaction.description === "Payment to Verizon Wireless") {
+        transaction.category = "Home";
+        transaction.subcategory = "Phone";
+      }
+      if (transaction.description === "Tax Payment to H&R Block") {
+        transaction.category = "Home";
+        transaction.subcategory = "Taxes";
+      }
+      if (transaction.description === "Harbor Freight Tools") {
+        transaction.category = "Home";
+        transaction.subcategory = "Home Improvement";
+      }
+      if (transaction.description === "Lowe's") {
+        transaction.category = "Home";
+        transaction.subcategory = "Home Improvement";
+      }
+      if (transaction.description === "Payment to U-Haul") {
+        transaction.category = "Home";
+        transaction.subcategory = "Home Improvement";
+      }
 
-      // Restaurants
-      if (transaction.description === "Chipotle Mexican Grill") transaction.category = "Restaurants";
-      if (transaction.description === "THE FAIRFIELD 1510 FAIRFIELD AVE FORT WAYNE INUS") transaction.category = "Restaurants";
-      if (transaction.description === "Portillo's") transaction.category = "Restaurants";
-      if (transaction.description === "Smoothie King") transaction.category = "Restaurants";
-      if (transaction.description === "SWEETWATER DOWNBEAT DI 5501 US Hwy 30 W FORT WAYNE I") transaction.category = "Restaurants";
-      if (transaction.description === "The Lucky Moose") transaction.category = "Restaurants";
-      if (transaction.description === "The Famous Taco") transaction.category = "Restaurants";
-      if (transaction.description === "TST*TEQUILA MEXICAN RE 6328 W Jefferson Blvd Fort Wayne I") transaction.category = "Restaurants";
+      // Shopping - Clothes / Entertainment / Music / Postage / Thrift Shopping
+      if (transaction.description === "DSW") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "Express") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "Forever 21") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "Kid to Kid") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "Ross Stores") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "SP AMERICAN TALL 850 New Burton Road DOVER DEUS") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
 
-      // Shopping
-      if (transaction.description === "DSW") transaction.category = "Shopping";
-      if (transaction.description === "Express") transaction.category = "Shopping";
-      if (transaction.description === "Forever 21") transaction.category = "Shopping";
-      if (transaction.description === "Kid to Kid") transaction.category = "Shopping";
-      if (transaction.description === "Ross Stores") transaction.category = "Shopping";
-      if (transaction.description === "USPS") transaction.category = "Shopping";
+      if (transaction.description === "Payment to Amazon Prime") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Entertainment";
+      }
+      if (transaction.description === "Steam") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Entertainment";
+      }
+      if (transaction.description === "MEMORIAL COLISEUM PARK 4000 PARNELL AVENUE FORT WAYNE I") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Entertainment";
+      }
 
-      if (transaction.description === "SP AMERICAN TALL 850 New Burton Road DOVER DEUS") transaction.category = "Shopping";
-      if (transaction.description === "Sweetwater Sound") transaction.category = "Shopping";
+      if (transaction.description === "Sweetwater Sound") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Music";
+      }
 
-      // Thrift Shopping
-      if (transaction.description === "Dollar Tree") transaction.category = "Thrift Shopping";
-      if (transaction.description === "FRANCISCAN CENTE FORT WAYNE INUS") transaction.category = "Thrift Shopping";
-      if (transaction.description === "Franciscan Center") transaction.category = "Thrift Shopping";
-      if (transaction.description === "Goodwill") transaction.category = "Thrift Shopping";
-      if (transaction.description === "The Lighthouse") transaction.category = "Thrift Shopping";
-      if (transaction.description === "Treasure House") transaction.category = "Thrift Shopping";
-      if (transaction.description === "TSA FT WAYNE STR XX 6031 LIMA RD FORT WAYNE IN") transaction.category = "Thrift Shopping";
-      if (transaction.description === "TSA FT WAYNE STR XX 710 E DUPONT RD FORT WAYNE IN") transaction.category = "Thrift Shopping";
+      if (transaction.description === "USPS") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Postage";
+      }
+
+      if (transaction.description === "Dollar Tree") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "FRANCISCAN CENTE FORT WAYNE INUS") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "Franciscan Center") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "Goodwill") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "The Lighthouse") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "Treasure House") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "TSA FT WAYNE STR XX 6031 LIMA RD FORT WAYNE IN") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "TSA FT WAYNE STR XX 710 E DUPONT RD FORT WAYNE IN") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
     });
 
     setTransactions(transactions);
