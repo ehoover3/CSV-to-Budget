@@ -269,7 +269,7 @@ const SpendingTracker = () => {
           });
         }
       });
-    vendorsData.sort((a, b) => a.description.localeCompare(b.description));
+    vendorsData.sort((a, b) => a.total - b.total);
 
     // Update the state with the calculated values
     setTotalIncome(totalIncomeAmount);

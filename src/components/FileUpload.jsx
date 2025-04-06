@@ -71,30 +71,63 @@ const FileUpload = ({ setTransactions }) => {
       if (transaction.description.includes("# Xfer From")) transaction.isIncluded = false;
       if (transaction.description.includes("# Xfer To")) transaction.isIncluded = false;
 
-      // Fix Broken Description
-      if (transaction.date === "3/9/2025" && transaction.description == "United Airlines") {
-        transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
-        transaction.category = "Shopping";
+      // Car
+      if (transaction.description === "A1 Automotive") {
+        transaction.category = "Car";
+        transaction.subcategory = "Repair";
+      }
+      if (transaction.description === "E-ZPass") {
+        transaction.category = "Car";
+        transaction.subcategory = "Tolls";
+      }
+      if (transaction.description === "The Tube Car Wash") {
+        transaction.category = "Car";
+        transaction.subcategory = "Wash";
+      }
+      if (transaction.description === "Lassus") {
+        transaction.category = "Car";
+        transaction.subcategory = "Gas";
+      }
+      if (transaction.description === "Murphy USA") {
+        transaction.category = "Car";
+        transaction.subcategory = "Gas";
+      }
+      if (transaction.description === "Payment to Erie Insurance Group") {
+        transaction.category = "Car";
+        transaction.subcategory = "Insurance";
+      }
+      if (transaction.description === "Shell") {
+        transaction.category = "Car";
+        transaction.subcategory = "Gas";
+      }
+      if (transaction.description === "Sunoco") {
+        transaction.category = "Car";
+        transaction.subcategory = "Gas";
       }
 
-      // Car
-      if (transaction.description === "A1 Automotive") transaction.category = "Car";
-      if (transaction.description === "E-ZPass") transaction.category = "Car";
-      if (transaction.description === "The Tube Car Wash") transaction.category = "Car";
-      if (transaction.description === "Lassus") transaction.category = "Car";
-      if (transaction.description === "Murphy USA") transaction.category = "Car";
-      if (transaction.description === "Payment to Erie Insurance Group") transaction.category = "Car";
-      if (transaction.description === "Shell") transaction.category = "Car";
-      if (transaction.description === "Sunoco") transaction.category = "Car";
-
       // Career Expenses
-      if (transaction.description === "Amazon Web Services") transaction.category = "Career Expenses";
-      if (transaction.description === "Kryterion Inc") transaction.category = "Career Expenses";
-      if (transaction.description === "Office Depot") transaction.category = "Career Expenses";
-      if (transaction.description === "The Guys' Place") transaction.category = "Career Expenses";
+      if (transaction.description === "Amazon Web Services") {
+        transaction.category = "Career Expenses";
+        transaction.subcategory = "AWS";
+      }
+      if (transaction.description === "Kryterion Inc") {
+        transaction.category = "Career Expenses";
+        transaction.subcategory = "Certification";
+      }
+      if (transaction.description === "Office Depot") {
+        transaction.category = "Career Expenses";
+        transaction.subcategory = "Office Supplies";
+      }
+      if (transaction.description === "The Guys' Place") {
+        transaction.category = "Career Expenses";
+        transaction.subcategory = "Haircut";
+      }
 
       // Daycare
-      if (transaction.description === "Kiddie Academy") transaction.category = "Daycare";
+      if (transaction.description === "Kiddie Academy") {
+        transaction.category = "Daycare";
+        transaction.subcategory = "Kiddie Academy";
+      }
 
       // Food - Grocery / Restaurant
       if (transaction.description === "ALDI") {
@@ -109,7 +142,15 @@ const FileUpload = ({ setTransactions }) => {
         transaction.category = "Food";
         transaction.subcategory = "Grocery";
       }
+      if (transaction.description === "Target") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
       if (transaction.description === "Trader Joe's") {
+        transaction.category = "Food";
+        transaction.subcategory = "Grocery";
+      }
+      if (transaction.description === "Walmart") {
         transaction.category = "Food";
         transaction.subcategory = "Grocery";
       }
@@ -147,9 +188,18 @@ const FileUpload = ({ setTransactions }) => {
       }
 
       // Health
-      if (transaction.description === "ROOTED IN HEALING 6131 STONEY CREEK DRIVEFORT WAYNE INUS") transaction.category = "Health";
-      if (transaction.description === "Walgreens") transaction.category = "Health";
-      if (transaction.description === "YMCA") transaction.category = "Health";
+      if (transaction.description === "ROOTED IN HEALING 6131 STONEY CREEK DRIVEFORT WAYNE INUS") {
+        transaction.category = "Health";
+        transaction.subcategory = "Therapy";
+      }
+      if (transaction.description === "Walgreens") {
+        transaction.category = "Health";
+        transaction.subcategory = "Pharmacy";
+      }
+      if (transaction.description === "YMCA") {
+        transaction.category = "Health";
+        transaction.subcategory = "Gym";
+      }
 
       // Income
       if (transaction.description === "Mobile Deposit") transaction.category = "Income";
@@ -200,6 +250,37 @@ const FileUpload = ({ setTransactions }) => {
         transaction.category = "Home";
         transaction.subcategory = "Home Improvement";
       }
+      if (transaction.date === "3/9/2025" && transaction.description == "United Airlines") {
+        transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
+        transaction.category = "Home";
+        transaction.category = "Home Improvement";
+      }
+      if (transaction.description === "Amazon") {
+        transaction.category = "Home";
+        transaction.subcategory = "Misc";
+      }
+      if (transaction.description === "eBay") {
+        transaction.category = "Home";
+        transaction.subcategory = "Misc";
+      }
+      if (transaction.description === "Finders Keepers") {
+        transaction.category = "Home";
+        transaction.subcategory = "Misc";
+      }
+      if (transaction.description === "ITCH.IO - GAME STORE 153 Vicksburg SAN FRANCISCOCAU") {
+        transaction.category = "Home";
+        transaction.subcategory = "Misc";
+      }
+
+      // Pets - Dog Park / Veterinarian
+      if (transaction.description === "Ruff House") {
+        transaction.category = "Pets";
+        transaction.subcategory = "Dog Park";
+      }
+      if (transaction.description === "Cedar Creek Veterinary x2625 LEO RD Fort Wayne I") {
+        transaction.category = "Pets";
+        transaction.subcategory = "Veterinarian";
+      }
 
       // Shopping - Clothes / Entertainment / Music / Postage / Thrift Shopping
       if (transaction.description === "DSW") {
@@ -218,6 +299,14 @@ const FileUpload = ({ setTransactions }) => {
         transaction.category = "Shopping";
         transaction.subcategory = "Clothes";
       }
+      if (transaction.description === "Kohl's") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
+      if (transaction.description === "Macy's") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Clothes";
+      }
       if (transaction.description === "Ross Stores") {
         transaction.category = "Shopping";
         transaction.subcategory = "Clothes";
@@ -229,11 +318,11 @@ const FileUpload = ({ setTransactions }) => {
 
       if (transaction.description === "Payment to Amazon Prime") {
         transaction.category = "Shopping";
-        transaction.subcategory = "Entertainment";
+        transaction.subcategory = "Streaming Service";
       }
       if (transaction.description === "Steam") {
         transaction.category = "Shopping";
-        transaction.subcategory = "Entertainment";
+        transaction.subcategory = "Video Games";
       }
       if (transaction.description === "MEMORIAL COLISEUM PARK 4000 PARNELL AVENUE FORT WAYNE I") {
         transaction.category = "Shopping";
@@ -263,6 +352,10 @@ const FileUpload = ({ setTransactions }) => {
         transaction.subcategory = "Thrift Shopping";
       }
       if (transaction.description === "Goodwill") {
+        transaction.category = "Shopping";
+        transaction.subcategory = "Thrift Shopping";
+      }
+      if (transaction.description === "Ollie's Bargain Outlet") {
         transaction.category = "Shopping";
         transaction.subcategory = "Thrift Shopping";
       }
