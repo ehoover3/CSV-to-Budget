@@ -8,8 +8,9 @@ const SpendingTracker = () => {
   const [transactions, setTransactions] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [vendors, setVendors] = useState([]);
-  const [totalSpent, setTotalSpent] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
+  const [totalSpent, setTotalSpent] = useState(0);
+  const [totalSavings, setTotalSavings] = useState(0);
 
   function getTotalIncomeAmount(transactions) {
     return transactions.filter((transaction) => transaction.isIncluded && transaction.type === "Income").reduce((sum, transaction) => sum + transaction.amount, 0);
@@ -89,7 +90,7 @@ const SpendingTracker = () => {
         <FileUpload setTransactions={setTransactions} />
         {transactions.length > 0 && (
           <div className='mb-6'>
-            <Totals totalIncome={totalIncome} totalSpent={totalSpent} />
+            <Totals totalIncome={totalIncome} totalSpent={totalSpent} totalSavings={totalSavings} />
             <CategoryTotals categoryData={categoryData} />
             <VendorTotals vendors={vendors} />
             {/* <TransactionsTable transactions={transactions} setTransactions={setTransactions} /> */}
