@@ -15,7 +15,7 @@ function Totals({ totalIncome, totalSpent, totalSavings }) {
         </div>
         <div className='bg-white p-6 rounded-lg shadow'>
           <h2 className='text-xl font-semibold mb-2'>Potential Savings</h2>
-          <p className='text-3xl text-green-600'>{formatCurrency(totalSavings)}</p>
+          <p className='text-3xl text-blue-600'>{formatCurrency(totalSavings)}</p>
         </div>
       </div>
     </div>

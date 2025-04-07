@@ -32,14 +32,11 @@ const FileUpload = ({ setTransactions }) => {
 
       for (let j = 0; j < currentLine.length; j++) {
         const char = currentLine[j];
-        if (char === '"' && (j === 0 || currentLine[j - 1] !== "\\")) {
-          insideQuotes = !insideQuotes;
-        } else if (char === "," && !insideQuotes) {
+        if (char === '"' && (j === 0 || currentLine[j - 1] !== "\\")) insideQuotes = !insideQuotes;
+        else if (char === "," && !insideQuotes) {
           values.push(currentValue.trim());
           currentValue = "";
-        } else {
-          currentValue += char;
-        }
+        } else currentValue += char;
       }
       values.push(currentValue.trim());
 
@@ -54,13 +51,15 @@ const FileUpload = ({ setTransactions }) => {
           const description = descriptionIndex !== -1 ? values[descriptionIndex] : "";
           const date = dateIndex !== -1 ? values[dateIndex] : "";
 
+          if (description.includes("# Xfer From") || description.includes("# Xfer To")) continue;
+
           transactions.push({
             date,
             description,
             amount,
             category,
             type: isDebit ? "Expense" : "Income",
-            isIncluded: true, // Add isIncluded property
+            savings: 0,
           });
         }
       }
@@ -259,8 +258,6 @@ const FileUpload = ({ setTransactions }) => {
     console.log(transactions);
 
     transactions.forEach((transaction) => {
-      if (transaction.description.includes("# Xfer From")) transaction.isIncluded = false;
-      if (transaction.description.includes("# Xfer To")) transaction.isIncluded = false;
       if (transaction.date === "3/9/2025" && transaction.description === "United Airlines") transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
 
       for (const category of transactionMapping) {
