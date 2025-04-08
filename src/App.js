@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import FileUpload from "./components/FileUpload.jsx";
 import Totals from "./components/Totals.jsx";
 import TransactionsTable from "./components/Transactions.jsx";
@@ -12,6 +12,7 @@ const SpendingTracker = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalSpent, setTotalSpent] = useState(0);
   const [totalSavings, setTotalSavings] = useState(0);
+  const firstRun = useRef(true);
 
   function getTotalIncomeAmount(transactions) {
     return transactions.filter((transaction) => transaction.type === "Income").reduce((sum, transaction) => sum + transaction.amount, 0);
@@ -26,6 +27,19 @@ const SpendingTracker = () => {
       const savings = transaction.savings ?? 0;
       return sum + savings;
     }, 0);
+  }
+
+  function sortCategories(categoriesData) {
+    categoriesData.forEach((category) => {
+      category.subcategoriesArray = Object.values(category.subcategories).sort((a, b) => b.value - a.value);
+    });
+    categoriesData.sort((a, b) => b.value - a.value);
+    const incomeIndex = categoriesData.findIndex((item) => item.name === "Income");
+    if (incomeIndex > 0) {
+      const [incomeItem] = categoriesData.splice(incomeIndex, 1);
+      categoriesData.unshift(incomeItem);
+    }
+    return categoriesData;
   }
 
   function getCategories(transactions) {
@@ -54,17 +68,7 @@ const SpendingTracker = () => {
       categoriesMap[category].subcategories[subcategory].value += transaction.amount;
       categoriesMap[category].subcategories[subcategory].savings += savings;
     });
-    const categoriesData = Object.values(categoriesMap);
-    categoriesData.forEach((category) => {
-      category.subcategoriesArray = Object.values(category.subcategories).sort((a, b) => b.value - a.value);
-    });
-    categoriesData.sort((a, b) => b.value - a.value);
-    const incomeIndex = categoriesData.findIndex((item) => item.name === "Income");
-    if (incomeIndex > 0) {
-      const [incomeItem] = categoriesData.splice(incomeIndex, 1);
-      categoriesData.unshift(incomeItem);
-    }
-    return categoriesData;
+    return Object.values(categoriesMap);
   }
 
   function getVendors(transactions) {
@@ -89,7 +93,11 @@ const SpendingTracker = () => {
     setTotalIncome(getTotalIncomeAmount(transactions));
     setTotalSpent(getTotalSpentAmount(transactions));
     setTotalSavings(getTotalSavings(transactions));
-    setCategories(getCategories(transactions));
+
+    let newCategories = getCategories(transactions);
+    newCategories = sortCategories(newCategories);
+    setCategories(newCategories || []);
+
     setVendors(getVendors(transactions));
   }, [transactions]);
 

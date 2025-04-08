@@ -1,7 +1,7 @@
 import React from "react";
 import { formatCurrency } from "../helpers/formatCurrency";
 
-const CategoryTotals = ({ categories, transactions, setTransactions }) => {
+const CategoryTotals = ({ categories = [], transactions, setTransactions }) => {
   const toggleSubcategory = (categoryName, subcategoryName, checked) => {
     const updated = transactions.map((txn) => {
       if (txn.category === categoryName && txn.subcategory === subcategoryName) {
