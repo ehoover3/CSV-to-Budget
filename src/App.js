@@ -14,17 +14,19 @@ const SpendingTracker = () => {
   const [totalSavings, setTotalSavings] = useState(0);
   const firstRun = useRef(true);
 
-  function getTotalIncomeAmount(transactions) {
-    return transactions.filter((transaction) => transaction.type === "Income").reduce((sum, transaction) => sum + transaction.amount, 0);
+  function getTotalIncomeAmount(categories) {
+    console.log(categories);
+    return categories.filter((categories) => categories.category === "Income").reduce((sum, category) => sum + category.amount, 0);
   }
 
-  function getTotalSpentAmount(transactions) {
-    return transactions.filter((transaction) => transaction.type === "Expense").reduce((sum, transaction) => sum + transaction.amount, 0);
+  function getTotalSpentAmount(categories) {
+    return categories.filter((categories) => categories.category !== "Income").reduce((sum, category) => sum + category.amount, 0);
   }
 
-  function getTotalSavings(transactions) {
-    return transactions.reduce((sum, transaction) => {
-      const savings = transaction.savings ?? 0;
+  function getTotalSavings(categories) {
+    return categories.reduce((sum, category) => {
+      const savings = category.savings ?? 0;
+      if (category.category === "Income") return sum;
       return sum + savings;
     }, 0);
   }
@@ -68,7 +70,11 @@ const SpendingTracker = () => {
       categoriesMap[category].subcategories[subcategory].value += transaction.amount;
       categoriesMap[category].subcategories[subcategory].savings += savings;
     });
-    return Object.values(categoriesMap);
+    const categoriesList = Object.values(categoriesMap);
+    categoriesList.forEach((category) => {
+      category.subcategoriesArray = Object.values(category.subcategories);
+    });
+    return categoriesList;
   }
 
   function getVendors(transactions) {
@@ -90,16 +96,22 @@ const SpendingTracker = () => {
   }
 
   useEffect(() => {
+    let newCategories = getCategories(transactions);
+    if (firstRun.current === true) {
+      newCategories = sortCategories(newCategories);
+      firstRun.current = false;
+    }
+    setCategories(newCategories || []);
+    setVendors(getVendors(transactions));
+    console.log("CATEGORIES");
+    console.log(categories);
+  }, [transactions]);
+
+  useEffect(() => {
     setTotalIncome(getTotalIncomeAmount(transactions));
     setTotalSpent(getTotalSpentAmount(transactions));
     setTotalSavings(getTotalSavings(transactions));
-
-    let newCategories = getCategories(transactions);
-    newCategories = sortCategories(newCategories);
-    setCategories(newCategories || []);
-
-    setVendors(getVendors(transactions));
-  }, [transactions]);
+  }, [categories]);
 
   return (
     <div className='max-w-6xl mx-auto p-6'>
