@@ -1,5 +1,5 @@
-import React from "react";
-import { FileUp } from "lucide-react";
+import React, { useEffect } from "react";
+import demo from "../data/demo.csv?url"; // Add ?url if using Vite or similar
 
 const FileUpload = ({ setTransactions }) => {
   const parseCSV = (csvText) => {
@@ -190,6 +190,7 @@ const FileUpload = ({ setTransactions }) => {
           {
             subcategory: "Rent",
             vendors: [
+              "Pine Woods Apartments",
               "BILT bx2919bXX00 - BILTRENT",
               "BILT 6dx2951f6cfXX00 - BILTRENT",
               "BILT-RENT PAYMT XX58 - RENT PMT",
@@ -245,7 +246,7 @@ const FileUpload = ({ setTransactions }) => {
         category: "Travel",
         subcategories: [
           { subcategory: "Car Insurance", vendors: ["Payment to Erie Insurance Group", "Payment to State Farm"] },
-          { subcategory: "Car Repair/Maintenance", vendors: ["A1 Automotive", "BOB THOMAS FOR 310 COLISEUM BOULEVFORT WAYNE INUS", "Jiffy Lube", "O'Reilly Auto Parts", "Tire Barn"] },
+          { subcategory: "Car Repair/Maintenance", vendors: ["A1 Automotive", "BOB THOMAS FOR 310 COLISEUM BOULEVFORT WAYNE INUS", "Jiffy Lube", "Mike’s Automotive", "O'Reilly Auto Parts", "Tire Barn"] },
           { subcategory: "Car Wash", vendors: ["The Tube Car Wash"] },
           { subcategory: "Gas", vendors: ["Al's Corner", "Amoco", "BP Global", "Giant Gas Station", "gogo stores", "HUNTSVILLE MARA 6990 LIMA ST HUNTSVILLE OHUS", "Kroger Fuel Center", "Lassus", "Meijer Gas", "Murphy USA", "Shell", "Sunoco"] },
           { subcategory: "Hotel", vendors: ["Holiday Inn"] },
@@ -255,7 +256,6 @@ const FileUpload = ({ setTransactions }) => {
         ],
       },
     ];
-    console.log(transactions);
 
     transactions.forEach((transaction) => {
       if (transaction.date === "3/9/2025" && transaction.description === "United Airlines") transaction.description = "UNITED ART AND EDUCATI 4111 N CLINTON ST";
@@ -265,7 +265,7 @@ const FileUpload = ({ setTransactions }) => {
           if (subcategory.vendors.includes(transaction.description)) {
             transaction.category = category.category;
             transaction.subcategory = subcategory.subcategory;
-            return; // Stop once we find the first match
+            return;
           }
         }
       }
@@ -274,31 +274,14 @@ const FileUpload = ({ setTransactions }) => {
     setTransactions(transactions);
   };
 
-  const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  useEffect(() => {
+    fetch(demo)
+      .then((res) => res.text())
+      .then((text) => parseCSV(text))
+      .catch((err) => console.error("Error loading demo CSV:", err));
+  }, []);
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const text = e.target.result;
-        parseCSV(text);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    reader.readAsText(file);
-  };
-
-  return (
-    <div className='flex justify-center mb-6'>
-      <label className='flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded cursor-pointer'>
-        <FileUp size={20} />
-        <span>Upload CSV File</span>
-        <input type='file' accept='.csv' onChange={handleFileUpload} className='hidden' />
-      </label>
-    </div>
-  );
+  return <div></div>;
 };
 
 export default FileUpload;

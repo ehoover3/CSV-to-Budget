@@ -15,7 +15,6 @@ const SpendingTracker = () => {
   const firstRun = useRef(true);
 
   function getTotalIncomeAmount(categories) {
-    console.log(categories);
     return categories.filter((categories) => categories.category === "Income").reduce((sum, category) => sum + category.amount, 0);
   }
 
@@ -103,8 +102,6 @@ const SpendingTracker = () => {
     }
     setCategories(newCategories || []);
     setVendors(getVendors(transactions));
-    console.log("CATEGORIES");
-    console.log(categories);
   }, [transactions]);
 
   useEffect(() => {
@@ -116,11 +113,12 @@ const SpendingTracker = () => {
   return (
     <div className='max-w-6xl mx-auto p-6'>
       <div className='text-center mb-8'>
-        <h1 className='text-3xl font-bold mb-4'>Spending Tracker</h1>
+        <h1 className='text-3xl font-bold mb-4'>Savings Calculator</h1>
         <FileUpload setTransactions={setTransactions} />
         {transactions.length > 0 && (
           <div className='mb-6'>
             <Totals totalIncome={totalIncome} totalSpent={totalSpent} totalSavings={totalSavings} />
+
             <CategoryTotals categories={categories} transactions={transactions} setTransactions={setTransactions} />
             <VendorTotals vendors={vendors} setTransactions={setTransactions} />
             <TransactionsTable transactions={transactions} setTransactions={setTransactions} />
